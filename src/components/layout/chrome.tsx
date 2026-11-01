@@ -27,9 +27,30 @@ export function ScrollProgress() {
   );
 }
 
-/** Floating call button (mobile) and back-to-top button. */
+/** Bottom-right: the AI assistant launcher (and a call button on phones). Bottom-left: back to top. */
 export function FloatingActions() {
-  const { scrollY } = useScroll();
+  return (
+    <>
+      <BackToTop />
+      <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
+        <a
+          href={company.phone.href}
+          aria-label={`Call ${company.phone.display}`}
+          className="relative mr-1 grid size-14 place-items-center rounded-full bg-linear-to-br from-brand-500 to-navy-500 text-white shadow-glow sm:hidden"
+        >
+          <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand-500/50" />
+          <Phone className="relative size-6" />
+        </a>
+        <Assistant />
+      </div>
+    </>
+  );
+}
+
+/** Back-to-top button whose gradient ring fills up as you read down the page. */
+function BackToTop() {
+  const { scrollY, scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
   const [show, setShow] = useState(false);
   useMotionValueEvent(scrollY, "change", (y) => setShow(y > 700));
 
@@ -40,33 +61,42 @@ export function FloatingActions() {
   };
 
   return (
-    <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
-      <AnimatePresence>
-        {show && (
-          <motion.button
-            type="button"
-            onClick={toTop}
-            aria-label="Back to top"
-            initial={{ opacity: 0, scale: 0.6, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.6, y: 20 }}
-            transition={{ duration: 0.4, ease }}
-            className="mr-2 grid size-12 place-items-center rounded-full bg-white text-brand-600 shadow-soft ring-1 ring-brand-100 transition-colors hover:bg-brand-500 hover:text-white"
-          >
-            <ArrowUp className="size-5" />
-          </motion.button>
-        )}
-      </AnimatePresence>
-      <a
-        href={company.phone.href}
-        aria-label={`Call ${company.phone.display}`}
-        className="relative mr-1 grid size-14 place-items-center rounded-full bg-linear-to-br from-brand-500 to-navy-500 text-white shadow-glow sm:hidden"
-      >
-        <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand-500/50" />
-        <Phone className="relative size-6" />
-      </a>
-      <Assistant />
-    </div>
+    <AnimatePresence>
+      {show && (
+        <motion.button
+          type="button"
+          onClick={toTop}
+          aria-label="Back to top"
+          initial={{ opacity: 0, scale: 0.6, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.6, y: 20 }}
+          transition={{ duration: 0.4, ease }}
+          className="group fixed bottom-4 left-4 z-40 grid size-12 place-items-center rounded-full bg-white/90 text-brand-600 shadow-soft backdrop-blur-md transition-colors duration-300 hover:bg-brand-500 hover:text-white sm:bottom-6 sm:left-6"
+        >
+          <svg viewBox="0 0 48 48" className="absolute inset-0 size-full -rotate-90" aria-hidden>
+            <defs>
+              <linearGradient id="to-top-ring" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#9900cc" />
+                <stop offset="100%" stopColor="#7468f2" />
+              </linearGradient>
+            </defs>
+            <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeOpacity={0.12} strokeWidth={2.5} />
+            <motion.circle
+              cx="24"
+              cy="24"
+              r="22"
+              fill="none"
+              stroke="url(#to-top-ring)"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              style={{ pathLength: progress }}
+              className="transition-opacity group-hover:opacity-0"
+            />
+          </svg>
+          <ArrowUp className="relative size-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 }
 

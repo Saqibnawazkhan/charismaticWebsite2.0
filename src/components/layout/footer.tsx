@@ -84,15 +84,15 @@ export function Footer() {
       <FooterWordmark />
 
       <div className="relative">
-        <div className="flex flex-col items-center justify-between gap-3 px-4 pt-6 pb-28 text-sm text-white/50 sm:flex-row sm:px-6 sm:pr-28 sm:pb-6">
-          <p className="text-center sm:text-left">
+        <div className="flex flex-col items-start justify-between gap-3 pt-6 pr-24 pb-24 pl-5 text-sm text-white/50 sm:flex-row sm:items-center sm:px-6 sm:pr-28 sm:pl-24 sm:pb-6">
+          <p className="text-left">
             © {new Date().getFullYear()} {company.legalName} · {company.address.line2}, {company.address.postcode}
             <span className="mx-2 text-white/20">|</span>
             <Link href="/privacy-policy/" className="transition-colors hover:text-white">
               Privacy
             </Link>
           </p>
-          <p className="text-center font-display tracking-wide text-white/60 sm:text-right">{company.tagline} · Support available 24/7</p>
+          <p className="text-left font-display tracking-wide text-white/60 sm:text-right">{company.tagline} · Support available 24/7</p>
         </div>
       </div>
     </footer>

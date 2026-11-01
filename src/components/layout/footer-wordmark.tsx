@@ -12,7 +12,7 @@ const letter: Variants = {
 };
 
 const dot: Variants = {
-  hidden: { y: "-3em", scale: 0.3, opacity: 0 },
+  hidden: { y: "-1.2em", scale: 0.3, opacity: 0 },
   show: (d: number) => ({ y: 0, scale: 1, opacity: 1, transition: { type: "spring", stiffness: 140, damping: 11, delay: 0.75 + d * 0.15 } }),
 };
 
@@ -31,14 +31,17 @@ export function FooterWordmark() {
         style={{ fontSize: "19.1cqw" }}
       >
         {LETTERS.map((ch, i) => (
-          <span key={i} className="group relative inline-block overflow-hidden pt-[0.32em] pb-[0.06em]">
-            <motion.span
-              custom={i}
-              variants={letter}
-              className="inline-block transition-[color,transform] duration-500 group-hover:-translate-y-[0.04em] group-hover:text-brand-300"
-            >
-              {ch}
-            </motion.span>
+          <span key={i} className="group relative inline-block">
+            {/* Only the letter is clipped (for the rise-in); the dot sits outside the clip so it is never cut off. */}
+            <span className="block overflow-hidden pt-[0.32em] pb-[0.06em]">
+              <motion.span
+                custom={i}
+                variants={letter}
+                className="inline-block transition-[color,transform] duration-500 group-hover:-translate-y-[0.04em] group-hover:text-brand-300"
+              >
+                {ch}
+              </motion.span>
+            </span>
             {ch === "ı" && <Dot ring={i === 4} />}
           </span>
         ))}
@@ -47,13 +50,20 @@ export function FooterWordmark() {
   );
 }
 
+// Readex Pro Bold's dotless i: the stem's ink runs from 0.0625em to 0.234em of the glyph, so its
+// centre is 0.148em from the letter's left edge (measured in the browser). Each dot is centred there,
+// with its centre 0.33em below the top padding - just above the x-height, like a real i-dot.
+const STEM_CENTER = 0.148;
+const DOT_CENTER_Y = 0.33;
+
 function Dot({ ring }: { ring: boolean }) {
+  const size = ring ? 0.23 : 0.2;
   return (
     <motion.span
       custom={ring ? 0 : 1}
       variants={dot}
-      // Centred over the stem, between the x-height and the ascender line.
-      className="absolute top-[0.2em] left-1/2 -ml-[0.13em] block size-[0.26em]"
+      className="absolute block"
+      style={{ width: `${size}em`, height: `${size}em`, left: `${STEM_CENTER - size / 2}em`, top: `${DOT_CENTER_Y - size / 2}em` }}
     >
       {ring ? (
         <span
@@ -61,7 +71,7 @@ function Dot({ ring }: { ring: boolean }) {
           style={{ mask: "radial-gradient(farthest-side, transparent 57%, #000 58%)", WebkitMask: "radial-gradient(farthest-side, transparent 57%, #000 58%)" }}
         />
       ) : (
-        <span className="block size-full scale-[0.82] rounded-full bg-linear-to-br from-iris to-blush" />
+        <span className="block size-full rounded-full bg-linear-to-br from-iris to-blush" />
       )}
     </motion.span>
   );
