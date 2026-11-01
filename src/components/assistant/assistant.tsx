@@ -24,6 +24,7 @@ import { cn } from "@/lib/cn";
 import { getLenis } from "@/lib/lenis";
 import { ease } from "@/components/ui/motion";
 import { ChatMarkdown, toPlainText } from "./markdown";
+import { CharisAvatar, ChatSparkleIcon } from "./icons";
 
 const NAME = "Charis";
 const STORAGE_KEY = "cc-assistant-v1";
@@ -231,43 +232,22 @@ export function Assistant() {
   );
 }
 
-/* ---------------------------------------------------------------- Orb */
-
-/** The assistant's living avatar: morphing gradient blobs inside a glossy sphere. */
-export function Orb({ size = 40, active = false, className }: { size?: number; active?: boolean; className?: string }) {
-  return (
-    <span
-      aria-hidden
-      style={{ width: size, height: size }}
-      className={cn("relative isolate inline-grid shrink-0 place-items-center overflow-hidden rounded-full bg-navy-700", className)}
-    >
-      <span className={cn("absolute inset-[-10%] animate-morph bg-linear-to-br from-brand-400 via-brand-600 to-iris opacity-90", active && "[animation-duration:3s]")} />
-      <span
-        className={cn(
-          "absolute inset-[8%] animate-morph bg-linear-to-tr from-blush/80 via-transparent to-navy-400/90 mix-blend-screen [animation-delay:-4s] [animation-direction:reverse]",
-          active && "[animation-duration:2.5s]",
-        )}
-      />
-      <span className="absolute top-[14%] left-[22%] h-[28%] w-[40%] rounded-full bg-white/45 blur-[3px]" />
-      <span className={cn("absolute inset-0 rounded-full ring-1 ring-white/30 ring-inset", active && "animate-pulse")} />
-    </span>
-  );
-}
-
 /* ---------------------------------------------------------------- Launcher */
 
 function Launcher({ open, teaser, onToggle, onDismissTeaser }: { open: boolean; teaser: boolean; onToggle: () => void; onDismissTeaser: () => void }) {
   return (
-    <div className="relative">
+    <div className="relative flex justify-end">
       <AnimatePresence>
         {teaser && !open && (
           <motion.div
-            initial={{ opacity: 0, x: 16, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 12, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.45, ease }}
-            className="absolute right-[calc(100%+0.9rem)] bottom-1 w-[min(15.5rem,calc(100vw-7rem))] rounded-2xl rounded-br-md bg-white p-4 shadow-[0_20px_50px_-15px_rgb(27_20_53/0.45)] ring-1 ring-brand-100"
+            style={{ transformOrigin: "bottom right" }}
+            className="absolute right-[calc(100%+0.75rem)] bottom-0 w-[min(15rem,calc(100vw-6.5rem))] rounded-2xl bg-white p-4 shadow-[0_24px_60px_-18px_rgb(27_20_53/0.5)] ring-1 ring-brand-100 sm:right-0 sm:bottom-[calc(100%+0.9rem)] sm:w-64"
           >
+            <span aria-hidden className="absolute right-7 -bottom-1.5 hidden size-3 rotate-45 bg-white ring-1 ring-brand-100 [clip-path:polygon(100%_0,100%_100%,0_100%)] sm:block" />
             <button
               type="button"
               onClick={onDismissTeaser}
@@ -276,42 +256,66 @@ function Launcher({ open, teaser, onToggle, onDismissTeaser }: { open: boolean; 
             >
               <X className="size-3.5" />
             </button>
-            <p className="font-display text-sm font-semibold text-ink">Hi, I&apos;m {NAME} 👋</p>
-            <p className="mt-1 pr-3 text-sm leading-snug text-muted">Questions about care? I can answer them or arrange a call back.</p>
+            <div className="flex items-start gap-3">
+              <CharisAvatar size={36} />
+              <div className="pr-3">
+                <p className="font-display text-sm font-semibold text-ink">Hi, I&apos;m {NAME}!</p>
+                <p className="mt-0.5 text-sm leading-snug text-muted">Questions about care? I can answer them or arrange a call back.</p>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-label={open ? `Close ${NAME}, the AI assistant` : `Chat with ${NAME}, our AI assistant`}
-        aria-expanded={open}
-        className="group relative grid size-16 place-items-center rounded-full shadow-glow transition-transform duration-500 hover:scale-105 active:scale-95"
-      >
-        {/* Rotating gradient ring */}
-        <span className="absolute -inset-[3px] animate-spin-slow rounded-full bg-[conic-gradient(from_0deg,#9900cc,#7468f2,#f48fd8,#003399,#9900cc)] [animation-duration:6s]" />
-        <span className="absolute inset-0 rounded-full bg-navy-950" />
-        {!open && <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand-500/40" />}
-        <span className="relative grid size-[3.4rem] place-items-center">
-          <AnimatePresence mode="wait" initial={false}>
-            {open ? (
-              <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.3 }}>
-                <X className="size-6 text-white" />
-              </motion.span>
-            ) : (
-              <motion.span key="orb" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }} transition={{ duration: 0.3 }}>
-                <Orb size={52} />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </span>
-        {!open && (
-          <span className="absolute -top-1 -right-1 rounded-full bg-white px-1.5 py-0.5 font-display text-[0.6rem] font-bold tracking-wider text-brand-600 shadow-md ring-1 ring-brand-100">
-            AI
-          </span>
+      <AnimatePresence mode="popLayout" initial={false}>
+        {open ? (
+          <motion.button
+            key="close"
+            type="button"
+            onClick={onToggle}
+            aria-label={`Close ${NAME}, the AI assistant`}
+            aria-expanded
+            initial={{ opacity: 0, scale: 0.6, rotate: -90 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.6, rotate: 90 }}
+            transition={{ type: "spring", stiffness: 320, damping: 22 }}
+            className="grid size-14 place-items-center rounded-full bg-navy-950 text-white shadow-[0_18px_40px_-12px_rgb(10_13_51/0.7)] ring-1 ring-white/15 transition-colors hover:bg-brand-600"
+          >
+            <X className="size-6" />
+          </motion.button>
+        ) : (
+          <motion.button
+            key="open"
+            type="button"
+            onClick={onToggle}
+            aria-label={`Chat with ${NAME}, our AI assistant`}
+            aria-expanded={false}
+            initial={{ opacity: 0, scale: 0.6, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.6, y: 10 }}
+            transition={{ type: "spring", stiffness: 320, damping: 22 }}
+            className="group relative"
+          >
+            {/* Soft breathing glow */}
+            <span aria-hidden className="absolute -inset-1.5 animate-pulse rounded-full bg-linear-to-r from-brand-500 via-iris to-navy-500 opacity-50 blur-lg" />
+            <span className="relative isolate flex h-14 items-center gap-3 overflow-hidden rounded-full p-2 text-white ring-1 ring-white/25 transition-transform duration-500 group-hover:-translate-y-0.5 group-active:scale-95 sm:pr-6">
+              {/* Flowing brand gradient, gloss and a light sweep */}
+              <span aria-hidden className="absolute inset-0 -z-10 animate-gradient-pan bg-[linear-gradient(115deg,#9900cc,#7468f2,#3c2fb8,#9900cc)] bg-[length:240%_100%]" />
+              <span aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_25%_0%,rgb(255_255_255/0.32),transparent_55%)]" />
+              <span aria-hidden className="absolute inset-y-0 left-0 -z-10 w-1/3 animate-shine bg-linear-to-r from-transparent via-white/30 to-transparent [animation-duration:4.5s]" />
+
+              <span className="relative grid size-10 place-items-center rounded-full bg-white/15 ring-1 ring-white/35 backdrop-blur-sm transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
+                <ChatSparkleIcon className="size-[30px] translate-x-[1px] drop-shadow-[0_1px_2px_rgb(43_10_90/0.4)]" />
+                <span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-400 ring-2 ring-[#5b2fd0]" />
+              </span>
+              <span className="hidden text-left leading-tight sm:block">
+                <span className="block font-display text-[0.97rem] font-semibold tracking-wide">Ask {NAME}</span>
+                <span className="block text-[0.72rem] font-medium text-white/80">AI assistant · online</span>
+              </span>
+            </span>
+          </motion.button>
         )}
-      </button>
+      </AnimatePresence>
     </div>
   );
 }
@@ -362,10 +366,10 @@ function Panel({
     };
   }, [onClose]);
 
-  // Keep the newest message in view.
+  // Keep the newest message in view (the welcome screen stays scrolled to the top).
   useEffect(() => {
     const el = scroller.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    if (el && items.length > 0) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [items]);
 
   const submit = (text = draft) => {
@@ -393,7 +397,7 @@ function Panel({
       <div className="grain relative shrink-0 overflow-hidden bg-hero px-5 pt-5 pb-4 text-white">
         <div aria-hidden className="absolute -top-16 -right-10 size-48 animate-aurora rounded-full bg-brand-500/50 blur-3xl" />
         <div className="relative flex items-center gap-3">
-          <Orb size={44} active={busy} />
+          <CharisAvatar size={44} active={busy} />
           <div className="min-w-0 flex-1">
             <p className="font-display text-lg leading-tight font-semibold">{NAME}</p>
             <p className="flex items-center gap-1.5 text-xs text-white/70">
@@ -519,9 +523,9 @@ function HeaderButton({ label, onClick, href, children }: { label: string; onCli
 
 function Welcome({ onPick }: { onPick: (text: string) => void }) {
   return (
-    <div className="relative flex flex-col items-center pt-4 text-center">
+    <div className="relative flex flex-col items-center pt-5 text-center">
       <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}>
-        <Orb size={84} className="shadow-glow" />
+        <CharisAvatar size={72} halo />
       </motion.div>
       <motion.h2
         initial={{ opacity: 0, y: 10 }}
@@ -534,7 +538,7 @@ function Welcome({ onPick }: { onPick: (text: string) => void }) {
       <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.5, ease }} className="mt-2 max-w-xs text-sm leading-relaxed text-muted">
         I can answer questions about our care services, the areas we cover and careers — and I can arrange a call back with our team.
       </motion.p>
-      <div className="mt-6 grid w-full grid-cols-2 gap-2.5">
+      <div className="mt-5 grid w-full grid-cols-2 gap-2.5">
         {starters.map(({ icon: Icon, label }, i) => (
           <motion.button
             key={label}
@@ -543,7 +547,7 @@ function Welcome({ onPick }: { onPick: (text: string) => void }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 + i * 0.07, duration: 0.5, ease }}
-            className="group flex flex-col items-start gap-3 rounded-2xl bg-white p-3.5 text-left shadow-card ring-1 ring-brand-100/70 transition-all hover:-translate-y-0.5 hover:ring-brand-300"
+            className="group flex flex-col items-start gap-2.5 rounded-2xl bg-white p-3 text-left shadow-card ring-1 ring-brand-100/70 transition-all hover:-translate-y-0.5 hover:ring-brand-300"
           >
             <span className="grid size-9 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-linear-to-br group-hover:from-brand-500 group-hover:to-navy-500 group-hover:text-white">
               <Icon className="size-4" />
@@ -581,7 +585,7 @@ function Message({ item, onNavigate }: { item: Item; onNavigate: () => void }) {
   const waiting = item.streaming && !item.text && !item.tool;
   return (
     <motion.li initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease }} className="relative flex max-w-[92%] items-start gap-2.5 self-start">
-      <Orb size={28} active={item.streaming} className="mt-1" />
+      <CharisAvatar size={30} active={item.streaming} className="mt-0.5" />
       <div className="min-w-0 flex-1">
         <div
           className={cn(

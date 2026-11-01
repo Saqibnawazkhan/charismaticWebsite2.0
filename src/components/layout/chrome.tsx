@@ -36,7 +36,7 @@ export function FloatingActions() {
         <a
           href={company.phone.href}
           aria-label={`Call ${company.phone.display}`}
-          className="relative mr-1 grid size-14 place-items-center rounded-full bg-linear-to-br from-brand-500 to-navy-500 text-white shadow-glow sm:hidden"
+          className="relative grid size-14 place-items-center rounded-full bg-linear-to-br from-brand-500 to-navy-500 text-white shadow-glow sm:hidden"
         >
           <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand-500/50" />
           <Phone className="relative size-6" />

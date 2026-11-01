@@ -46,7 +46,9 @@
   --animate-marquee-y: marquee-y 30s linear infinite;
   --animate-aurora: aurora 18s ease-in-out infinite alternate;
   --animate-shine: shine 3.5s ease-in-out infinite;
-  --animate-morph: morph 8s ease-in-out infinite;
+  --animate-twinkle: twinkle 2.6s ease-in-out infinite;
+  --animate-twinkle-slow: twinkle-soft 4.5s ease-in-out infinite;
+  --animate-gradient-pan: gradient-pan 6s ease-in-out infinite;
   --animate-kenburns: kenburns 28s ease-in-out infinite alternate;
   --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
 
@@ -71,10 +73,17 @@
     0% { transform: translateX(-120%) skewX(-20deg); }
     60%, 100% { transform: translateX(220%) skewX(-20deg); }
   }
-  @keyframes morph {
-    0%, 100% { border-radius: 42% 58% 60% 40% / 45% 45% 55% 55%; transform: rotate(0deg) scale(1); }
-    33% { border-radius: 60% 40% 38% 62% / 55% 60% 40% 45%; transform: rotate(120deg) scale(1.08); }
-    66% { border-radius: 38% 62% 52% 48% / 40% 52% 48% 60%; transform: rotate(240deg) scale(0.96); }
+  @keyframes twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    50% { transform: scale(0.45) rotate(25deg); opacity: 0.5; }
+  }
+  @keyframes twinkle-soft {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(0.82) rotate(-12deg); }
+  }
+  @keyframes gradient-pan {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
   @keyframes kenburns {
     from { transform: scale(1.04) translate3d(0, 0, 0); }
