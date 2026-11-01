@@ -38,9 +38,17 @@ All three forms post to `src/app/api/enquiry/route.ts`. To have them emailed to 
 
 Without an API key, submissions are printed to the server console instead (useful in development). Job applications include the uploaded CV as an attachment.
 
+## AI assistant (Charis)
+
+The chat bubble in the bottom-right corner is an AI assistant powered by Claude. It answers questions using the site's own content (`src/lib/assistant/knowledge.ts` builds its instructions from `src/data/site.ts`, the blog and the job listings, so it stays up to date when you edit those), links visitors to the right pages, and can **arrange a call back** — it collects the visitor's name and number, confirms them, then emails the team using the same email settings as the forms.
+
+Extras for accessibility: an **Easy Read** switch (short, simple sentences), voice input (browsers that support it), and a "Listen" button to read answers aloud.
+
+To switch it on, add `ANTHROPIC_API_KEY` (from [platform.claude.com](https://platform.claude.com)) to your environment variables. Optionally set `ASSISTANT_MODEL` — it defaults to `claude-opus-5-5`; `claude-haiku-5-5` is a cheaper, faster alternative. The API route is `src/app/api/assistant/route.ts`; the chat UI is `src/components/assistant/`.
+
 ## Deploying
 
-The site deploys as-is to [Vercel](https://vercel.com) (import the repo, add the environment variables above). All pages except the form API are pre-rendered as static HTML.
+The site deploys as-is to [Vercel](https://vercel.com) (import the repo, add the environment variables above — `RESEND_API_KEY` etc. for forms and `ANTHROPIC_API_KEY` for the assistant). All pages except the form and assistant APIs are pre-rendered as static HTML.
 
 URLs match the original WordPress site (`/about-us/`, `/live-in-care/`, `/blog/<slug>/`, `/jobs/<slug>/`…), so existing links and search rankings carry over. `/apply-online/` redirects to the job application form.
 

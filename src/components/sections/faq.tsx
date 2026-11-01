@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import { faqs } from "@/data/site";
 import { Reveal, Stagger, StaggerItem, ease } from "@/components/ui/motion";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { CallButton } from "@/components/ui/button";
+import { Button, CallButton } from "@/components/ui/button";
+import { openAssistant } from "@/components/assistant/assistant";
 import { cn } from "@/lib/cn";
 
 export function FAQ({ items = faqs }: { items?: { q: string; a: string }[] }) {
@@ -29,8 +30,14 @@ export function FAQ({ items = faqs }: { items?: { q: string; a: string }[] }) {
           </Reveal>
           <Reveal delay={0.3} y={20} className="mt-8 rounded-3xl bg-mist p-6">
             <p className="font-display font-semibold text-ink">Still have questions?</p>
-            <p className="mt-1 mb-5 text-sm text-muted">Our friendly team is happy to talk things through.</p>
-            <CallButton />
+            <p className="mt-1 mb-5 text-sm text-muted">Our friendly team is happy to talk things through — or ask our AI assistant, any time.</p>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+              <CallButton />
+              <Button variant="outline" onClick={() => openAssistant()} className="px-5! py-2.5! text-sm">
+                <Sparkles className="size-4" />
+                Ask Charis
+              </Button>
+            </div>
           </Reveal>
         </div>
 

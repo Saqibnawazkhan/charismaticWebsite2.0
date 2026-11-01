@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { company, navigation, services } from "@/data/site";
 import { Logo } from "@/components/ui/logo";
-import { Marquee } from "@/components/ui/motion";
+import { FooterWordmark } from "./footer-wordmark";
 import { FacebookIcon, InstagramIcon, LinkedinIcon, YoutubeIcon } from "@/components/ui/icons";
 
 const socials = [
@@ -13,28 +13,13 @@ const socials = [
   { label: "LinkedIn", href: company.socials.linkedin, Icon: LinkedinIcon },
 ];
 
-const marqueeWords = ["Compassionate Care", "Empowering Lives", "Professional", "Respectful", "Innovative", "Transforming The Way We Care"];
-
 export function Footer() {
   return (
     <footer className="grain relative overflow-hidden bg-navy-950 text-white">
       <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-brand-600/25 blur-[120px]" />
       <div aria-hidden className="absolute inset-0 bg-grid opacity-60" />
 
-      <div className="relative border-b border-white/10 py-10">
-        <Marquee speed={45}>
-          {marqueeWords.map((t) => (
-            <span key={t} className="flex items-center gap-12 font-display text-5xl font-semibold whitespace-nowrap md:text-7xl">
-              <span className="text-transparent transition-colors duration-500 [-webkit-text-stroke:1px_rgb(255_255_255/0.35)] hover:text-white">
-                {t}
-              </span>
-              <span className="text-brand-400">✦</span>
-            </span>
-          ))}
-        </Marquee>
-      </div>
-
-      <div className="container-x relative grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
+      <div className="container-x relative grid gap-12 pt-20 pb-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div className="space-y-6">
           <Logo light className="h-16! w-[125px]!" />
           <p className="max-w-xs leading-relaxed text-white/60">
@@ -96,12 +81,18 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="relative border-t border-white/10">
-        <div className="container-x flex flex-col items-center justify-between gap-3 py-6 text-sm text-white/50 sm:flex-row">
-          <p>
-            © {new Date().getFullYear()} {company.legalName}. All rights reserved.
+      <FooterWordmark />
+
+      <div className="relative">
+        <div className="flex flex-col items-center justify-between gap-3 px-4 pt-6 pb-28 text-sm text-white/50 sm:flex-row sm:px-6 sm:pr-28 sm:pb-6">
+          <p className="text-center sm:text-left">
+            © {new Date().getFullYear()} {company.legalName} · {company.address.line2}, {company.address.postcode}
+            <span className="mx-2 text-white/20">|</span>
+            <Link href="/privacy-policy/" className="transition-colors hover:text-white">
+              Privacy
+            </Link>
           </p>
-          <p className="font-display tracking-wide text-white/60">{company.tagline}</p>
+          <p className="text-center font-display tracking-wide text-white/60 sm:text-right">{company.tagline} · Support available 24/7</p>
         </div>
       </div>
     </footer>

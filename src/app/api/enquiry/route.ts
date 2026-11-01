@@ -1,4 +1,5 @@
 import { company } from "@/data/site";
+import { sendTeamEmail } from "@/lib/email";
 
 /**
  * Receives the website's forms (contact, brochure request, job application).
@@ -87,27 +88,8 @@ export async function POST(request: Request) {
     attachments.length ? `\nCV attached: ${attachments[0].filename}` : "",
   ].join("\n");
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.info(`[enquiry] ${subject}\n${text}`);
-    return Response.json({ ok: true });
-  }
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: process.env.ENQUIRY_FROM_EMAIL ?? "Charismatic Care Website <onboarding@resend.dev>",
-      to: (process.env.ENQUIRY_TO_EMAIL ?? company.email).split(",").map((e) => e.trim()),
-      reply_to: fields.email,
-      subject,
-      text,
-      attachments: attachments.length ? attachments : undefined,
-    }),
-  });
-
-  if (!res.ok) {
-    console.error("[enquiry] email delivery failed", res.status, await res.text());
+  const sent = await sendTeamEmail({ subject, text, replyTo: fields.email, attachments });
+  if (!sent) {
     return Response.json(
       { ok: false, error: `Sorry, we couldn't send your message. Please call us on ${company.phone.display}.` },
       { status: 502 },

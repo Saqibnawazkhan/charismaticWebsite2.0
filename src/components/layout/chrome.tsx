@@ -7,6 +7,7 @@ import { ArrowUp, Phone } from "lucide-react";
 import { company } from "@/data/site";
 import { getLenis } from "@/lib/lenis";
 import { ease } from "@/components/ui/motion";
+import { Assistant } from "@/components/assistant/assistant";
 
 /** Respects the visitor's "reduce motion" OS setting for every animation. */
 export function MotionProvider({ children }: { children: ReactNode }) {
@@ -50,7 +51,7 @@ export function FloatingActions() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.6, y: 20 }}
             transition={{ duration: 0.4, ease }}
-            className="grid size-12 place-items-center rounded-full bg-white text-brand-600 shadow-soft ring-1 ring-brand-100 transition-colors hover:bg-brand-500 hover:text-white"
+            className="mr-2 grid size-12 place-items-center rounded-full bg-white text-brand-600 shadow-soft ring-1 ring-brand-100 transition-colors hover:bg-brand-500 hover:text-white"
           >
             <ArrowUp className="size-5" />
           </motion.button>
@@ -59,11 +60,12 @@ export function FloatingActions() {
       <a
         href={company.phone.href}
         aria-label={`Call ${company.phone.display}`}
-        className="relative grid size-14 place-items-center rounded-full bg-linear-to-br from-brand-500 to-navy-500 text-white shadow-glow sm:hidden"
+        className="relative mr-1 grid size-14 place-items-center rounded-full bg-linear-to-br from-brand-500 to-navy-500 text-white shadow-glow sm:hidden"
       >
         <span className="absolute inset-0 animate-pulse-ring rounded-full bg-brand-500/50" />
         <Phone className="relative size-6" />
       </a>
+      <Assistant />
     </div>
   );
 }
